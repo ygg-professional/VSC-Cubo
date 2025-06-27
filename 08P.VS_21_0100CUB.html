@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Three.js Cubo con Bordes</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    // Aquí va todo tu código JS, adaptado para que funcione en el navegador:
+
+    // Escena
+    const escena = new THREE.Scene();
+    escena.background = new THREE.Color('black');
+
+    // Cámara
+    const anchopantalla = window.innerWidth;
+    const altopantalla = window.innerHeight;
+    const camara = new THREE.PerspectiveCamera(75, anchopantalla / altopantalla, 0.1, 1000);
+
+    // Renderizador
+    const renderizador = new THREE.WebGL1Renderer();
+    renderizador.setSize(anchopantalla, altopantalla);
+    document.body.appendChild(renderizador.domElement);
+
+    // Cubo y bordes
+    const geometria = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cubo = new THREE.Mesh(geometria, material);
+    escena.add(cubo);
+
+    // Bordes del cubo
+    const edges = new THREE.EdgesGeometry(geometria);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+    const lineSegments = new THREE.LineSegments(edges, lineMaterial);
+    cubo.add(lineSegments);
+
+    // Posición cámara
+    camara.position.z = 5;
+
+    let velocidad = 0.1;
+    let des = true;
+
+    function Update() {
+      requestAnimationFrame(Update);
+      cubo.translateX(velocidad);
+      if ((cubo.position.x > 5 || cubo.position.x < -5) && des === true) {
+        velocidad = velocidad * -1;
+        des = false;
+      } else {
+        des = true;
+      }
+      renderizador.render(escena, camara);
+    }
+
+    Update();
+
+    // Ajustar renderizador al cambiar tamaño de ventana
+    window.addEventListener('resize', () => {
+      const ancho = window.innerWidth;
+      const alto = window.innerHeight;
+      renderizador.setSize(ancho, alto);
+      camara.aspect = ancho / alto;
+      camara.updateProjectionMatrix();
+    });
+
+  </script>
+</body>
+</html>
