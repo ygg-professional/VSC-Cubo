@@ -1,0 +1,2 @@
+# VSC-Cubo
+VISUAL STUDIO CODE
